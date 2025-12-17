@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 /**
@@ -11,8 +11,6 @@ type PageProps = {
  * Next.js აქედან იგებს ყველა შესაძლო [id]-ს
  */
 export async function generateStaticParams() {
-  // დროებით static ID-ები
-  // მოგვიანებით შეგიძლია API-დან წამოიღო
   return [
     { id: "1" },
     { id: "2" },
@@ -20,15 +18,17 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function AlbumPage({ params }: PageProps) {
-  if (!params?.id) {
+export default async function AlbumPage({ params }: PageProps) {
+  const { id } = await params;
+
+  if (!id) {
     notFound();
   }
 
   return (
     <main style={{ padding: 40, color: "white" }}>
       <h1>Album page</h1>
-      <p>Album ID: {params.id}</p>
+      <p>Album ID: {id}</p>
     </main>
   );
 }
