@@ -297,3 +297,100 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/* ===========================
+   RESPONSIVE STYLES
+=========================== */
+
+/* 📱 Mobile (max 480px) */
+@media (max-width: 480px) {
+  .playerContainer {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .playerBox {
+    gap: 20px;
+  }
+
+  .languageButtons {
+    flex-direction: column;
+    max-width: 100%;
+
+    button {
+      width: 100%;
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+
+  .playersBox {
+    max-width: 100%;
+    gap: 15px;
+  }
+
+  .radioList {
+    gap: 6px;
+
+    .radioItem {
+      padding: 8px;
+
+      .radioName {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .search {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .volumeControl {
+    flex-direction: column;
+    gap: 8px;
+
+    .volumeSlider {
+      width: 100%;
+    }
+  }
+
+  .title {
+    font-size: 18px;
+  }
+}
+
+/* 📱 Tablet (max 768px) */
+@media (max-width: 768px) {
+  .playerContainer {
+    padding: 30px;
+  }
+
+  .languageButtons {
+    max-width: 100%;
+  }
+
+  .playersBox {
+    max-width: 100%;
+  }
+
+  .radioBox {
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .volumeSlider {
+    width: 140px;
+  }
+}
+
+/* 💻 Small laptops (max 1024px) */
+@media (max-width: 1024px) {
+  .playerContainer {
+    max-width: 100%;
+  }
+}
