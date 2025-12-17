@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./SongListTable.module.scss";
@@ -18,7 +19,7 @@ import {
 import axios from "axios";
 
 type Song = {
-  id: number |string;
+  id: number | string;
   image: string;
   title: string;
   albumId: string;
@@ -27,20 +28,21 @@ type Song = {
 };
 
 export default function SongListTable() {
-useEffect(() => {
-  axios
-    .get("http://localhost:4000/music")
-    .then((res) => setSongs(res.data))
-    .catch((err) => console.error(err));
-}, []);
-
-
+  // ✅ useState ყოველთვის ზემოთ
   const [songs, setSongs] = useState<Song[]>([]);
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeRowId, setActiveRowId] = useState<number | string | null>(null);
+
   const lastTriggerRef = useRef<HTMLElement | null>(null);
   const floatingDivRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ ახლა useEffect უსაფრთხოა
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/music")
+      .then((res) => setSongs(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   const stop = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -91,22 +93,29 @@ useEffect(() => {
 
   useEffect(() => {
     if (!menuOpen) return;
+
     const onDocClick = (e: MouseEvent) => {
       const trg = e.target as Node;
       const floatingEl = refs.floating.current;
       const refEl = refs.reference.current as Node | null;
+
       if (floatingEl && floatingEl.contains(trg)) return;
       if (refEl && refEl.contains(trg)) return;
+
       setMenuOpen(false);
       setActiveRowId(null);
     };
+
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [menuOpen, refs.floating, refs.reference]);
 
-  const onThreeDotsClick = (e: React.MouseEvent<HTMLElement>, rowId: number | string) => {
+  const onThreeDotsClick = (
+    e: React.MouseEvent<HTMLElement>,
+    rowId: number | string
+  ) => {
     stop(e);
-    const el = e.currentTarget as HTMLElement;
+    const el = e.currentTarget;
     lastTriggerRef.current = el;
     refs.setReference(el);
     setActiveRowId(rowId);
@@ -120,49 +129,53 @@ useEffect(() => {
           <tr className={styles.thead}>
             <th>#</th>
             <th>Song Name</th>
-            <th>album</th>
-            <th>duration</th>
-            <th></th>
+            <th>Album</th>
+            <th>Duration</th>
+            <th />
           </tr>
         </thead>
+
         <tbody className={styles.tbody}>
           {songs.map((song, i) => (
             <tr key={song.id}>
               <td className={styles.songId}>{i + 1}</td>
+
               <td className={styles.songName}>
                 <div className={styles.imageWrapper}>
                   <Image
                     src={song.image || photo}
-                    alt={song.title ?? "song"}
+                    alt={song.title || "song"}
                     width={48}
                     height={48}
                   />
                 </div>
+
                 <div className={styles.songNameBox}>
                   <span className={styles.songNameText}>{song.title}</span>
                   <span className={styles.songArtistText}>{song.artist}</span>
                 </div>
               </td>
+
               <td>{song.albumId}</td>
               <td>{song.duration}</td>
+
               <td>
-                <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                <span style={{ display: "inline-flex", gap: 8 }}>
                   <span onMouseDown={stop} onClick={stop}>
-                    <HeartBtn
-                      iconColor="gray"
-                      onToggle={() => {
-                        /* wire later */
-                      }}
-                    />
+                    <HeartBtn iconColor="gray" onToggle={() => {}} />
                   </span>
+
                   <span
                     onMouseDown={stop}
                     onClick={(e) => onThreeDotsClick(e, song.id)}
                     aria-expanded={menuOpen && activeRowId === song.id}
                     aria-haspopup="menu"
-                    style={{ display: "inline-flex", cursor: "pointer" }}
+                    style={{ cursor: "pointer" }}
                   >
-                    <ThreeDotsBtn iconColor="white" open={menuOpen && activeRowId === song.id} />
+                    <ThreeDotsBtn
+                      iconColor="white"
+                      open={menuOpen && activeRowId === song.id}
+                    />
                   </span>
                 </span>
               </td>
@@ -178,7 +191,6 @@ useEffect(() => {
             style={{ ...floatingStyles, zIndex: 99999 }}
             onMouseDown={stop}
             onClick={stop}
-            data-open="true"
           >
             <ThreeDotsList withoutPlaylist />
           </div>

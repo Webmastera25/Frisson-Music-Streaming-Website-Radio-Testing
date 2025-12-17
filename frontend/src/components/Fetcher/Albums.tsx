@@ -2,48 +2,84 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AlbumCard from "@/components/AlbumCard/AlbumCard";
-import "../../styles/Defaults/defaultGrid.scss";
+import Image from "next/image";
 
+// Album ტიპი
 interface Album {
   id: number;
-  albumId:string|number;
-  title: string;
-  artistName: string;
+  name: string;
+  avatarFileName: string;
   coverUrl: string;
+  cover?: string;
+  title?: string;
+  releaseDate?: string;
+  author?: {
+    id: number;
+    name: string;
+  };
 }
 
+// Props-სთვის
 interface AlbumsProps {
-  onClick?: () => void; // <- add this
+  onClick?: () => void; // სურვილისამებრ შეგიძლია დაემატოს
 }
 
 const Albums: React.FC<AlbumsProps> = ({ onClick }) => {
-  // <- use props here
   const [albums, setAlbums] = useState<Album[]>([]);
 
   useEffect(() => {
     axios
-      .get<Album[]>("http://localhost:4000/albums")
-      .then((response) => {
-        setAlbums(response.data);
-      })
-      .catch((error) => {
-        console.error("Error loading albums:", error);
-      });
+      .get<Album[]>(
+        "https://frisson-music-app.s3.eu-north-1.amazonaws.com/albums"
+      )
+      .then((response) => setAlbums(response.data))
+      .catch((error) => console.error("Error loading albums:", error));
   }, []);
 
   return (
-    <div className="Grid">
-      {albums.map((album) => (
-        <AlbumCard // 
-          key={album.id}
-          album={album}
-          title={album.title}
-          artistName={album.artistName}
-          coverUrl={album.coverUrl}
-          onClick={onClick} // <- pass the prop
-        />
-      ))}
+    <div style={{ padding: "20px", color: "white" }} onClick={onClick}>
+      <h1>🎵 Albums</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+          gap: "20px",
+        }}
+      >
+        {albums.map((album) => (
+          <div
+            key={album.id}
+            style={{
+              backgroundColor: "#1e1e1e",
+              padding: "15px",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            {album.coverUrl && (
+              <Image
+                src={album.coverUrl}
+                alt={album.title || album.name}
+                width={200}
+                height={200}
+                style={{
+                  borderRadius: "10px",
+                  marginBottom: "10px",
+                  objectFit: "cover",
+                }}
+              />
+            )}
+
+            <h3>{album.name}</h3>
+            <p>{album.avatarFileName}</p>
+
+            {album.author?.name && (
+              <p style={{ color: "#aaa" }}>by {album.author.name}</p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

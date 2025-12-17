@@ -1,33 +1,37 @@
 "use client";
+
+import { useState } from "react";
 import styles from "./page.module.scss";
 import NewsComponent from "@/components/NewsComponent/NewsComponent";
 import MusicCard from "@/components/MusicCard/MusicCard";
 import TopCharts from "@/components/TopCharts/TopCharts";
 import AlbumCard from "@/components/AlbumCard/AlbumCard";
 import ArtistCard from "@/components/ArtistCard/ArtistCard";
+import Albums from "@/components/Fetcher/Albums"; // შენს კომპონენტზე
 import Link from "next/link";
 import "@/styles/Defaults/defaultGrid.scss";
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState(1);
+
   return (
     <main className={styles.main}>
+      {/* News Section */}
       <NewsComponent
         title="Top Hit Of The Week"
         imageUrl="/Images/NewsComponent/NewComponentTest.jpg"
         plays={`22222 Plays`}
       />
 
+      {/* Top Hits Section */}
       <section className={styles.topHitsSection}>
         <div className={styles.topHitsSectionTextBox}>
           <h2>Top Hits</h2>
-
           <Link href={"/top-hits-page"}>
             <span>See all</span>
           </Link>
         </div>
         <div className={`scrollbar`}>
-          {" "}
-          {/*styles.topHitsSectionCardsBox*/}
           {Array.from({ length: 9 }).map((_, i) => (
             <MusicCard
               key={i}
@@ -39,6 +43,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Top Charts Section */}
       <section className={styles.topChartsSection}>
         <div className={styles.topChartsSectionTextBox}>
           <h2>Top Charts</h2>
@@ -46,7 +51,7 @@ export default function Home() {
             <span>See all</span>
           </Link>
         </div>
-        <div className={` scrollbar`}>
+        <div className={`scrollbar`}>
           {Array.from({ length: 9 }).map((_, i) => (
             <div className={styles.topCharts} key={i}>
               <TopCharts
@@ -66,6 +71,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Albums Section */}
       <section className={styles.albumSection}>
         <div className={styles.albumSectionTextBox}>
           <h2>Popular Albums</h2>
@@ -73,18 +79,12 @@ export default function Home() {
             <span>See all</span>
           </Link>
         </div>
-        <div className={`scrollbar`}>
-          {Array.from({ length: 9 }).map((_, i) => (
-            <AlbumCard
-              key={i}
-              title="Of Monsters And Men"
-              artist="Fever Dream"
-              coverUrl="/Images/AlbumCard/AlbumPhoto.jpg"
-            />
-          ))}
-        </div>
+
+        {/* აქ ჩავსვით Albums კომპონენტი activeTab კონტროლით */}
+        {activeTab === 1 && <Albums onClick={() => setActiveTab(2)} />}
       </section>
 
+      {/* Artist Section */}
       <section className={styles.artistSection}>
         <div className={styles.artistSectionTextBox}>
           <h2>Popular Artists</h2>
@@ -106,3 +106,4 @@ export default function Home() {
     </main>
   );
 }
+
