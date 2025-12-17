@@ -1,16 +1,36 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 
-export default function AlbumId() {
-   const params = useParams()
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
 
-   // console.log(params.id)
-   return (
+/**
+ * 🔹 Static export-ისთვის აუცილებელია
+ * Next.js აქედან იგებს ყველა შესაძლო [id]-ს
+ */
+export async function generateStaticParams() {
+  // დროებით static ID-ები
+  // მოგვიანებით შეგიძლია API-დან წამოიღო
+  return [
+    { id: "1" },
+    { id: "2" },
+    { id: "3" },
+  ];
+}
 
-      <div style={{color:"white"}}>
-         {params.id}
-      </div>
-   )
+export default function AlbumPage({ params }: PageProps) {
+  if (!params?.id) {
+    notFound();
+  }
 
+  return (
+    <main style={{ padding: 40, color: "white" }}>
+      <h1>Album page</h1>
+      <p>Album ID: {params.id}</p>
+    </main>
+  );
 }
