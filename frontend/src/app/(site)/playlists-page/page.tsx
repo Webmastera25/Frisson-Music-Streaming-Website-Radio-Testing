@@ -5,10 +5,8 @@ import plusIcon from "../../../../public/icons/Button/plusIcon.svg";
 import styles from "./page.module.scss";
 import Searchbar from "@/components/Searchbar/Searchbar";
 import PlaylistComponent from "@/components/PlaylistComponent/Playlist";
-import { StaticImageData } from "next/image";
 import NewsComponent from "@/components/NewsComponent/NewsComponent";
 import Table from "@/components/Table/Table";
-import banner from "@/../public/Images/playlistsPage/playlist.jpg";
 import { useActiveTab } from "@/components/Context/ActiveTabContext";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,7 +18,7 @@ interface Album {
   id: string;
   description?: string;
   albumName?: string;
-  imageUrl?: string | StaticImageData;
+  imageUrl?: string;
 }
 
 export default function PlaylistPage() {
@@ -36,6 +34,9 @@ export default function PlaylistPage() {
 
   const openCreate = () => setIsCreateOpen(true);
   const closeCreate = () => setIsCreateOpen(false);
+
+  // Banner სურათი public folder-დან
+  const bannerSrc = "/Images/playlistsPage/playlist.jpg";
 
   return (
     <main className={styles.main}>
@@ -55,7 +56,7 @@ export default function PlaylistPage() {
             {albums.map((album) => (
               <PlaylistComponent
                 key={album.id}
-                id={album.id} // ✅ required
+                id={album.id}
                 title={album.albumName || "playlist"}
                 imageUrl={album.imageUrl}
                 onClick={() => setActiveTab(2)}
@@ -70,7 +71,7 @@ export default function PlaylistPage() {
       {activeTab === 2 && albums.length > 0 && (
         <div className={`ormocdatotxmeti cflex ${styles.nugo}`}>
           <NewsComponent
-            imageUrl={banner}
+            imageUrl={bannerSrc}  // შეცვლილია public path-ზე
             plays="11 songs"
             title={albums[0]?.albumName || "playlist 1"}
           />
